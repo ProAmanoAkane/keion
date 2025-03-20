@@ -59,7 +59,7 @@ A Discord music bot built with discord.py that plays music from YouTube in voice
 
 3. **Run the bot**
    ```bash
-    docker compose up -d
+   poetry run python src/main.py
    ```
 
 ## Bot Commands
