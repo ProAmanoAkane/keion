@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: keion
+    image: k_on
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    init: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
