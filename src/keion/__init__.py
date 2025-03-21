@@ -1,6 +1,8 @@
+"""Keion Discord music bot package."""
+
 import discord
 from discord.ext import commands
-from .music_cog import MusicCog
+from .cogs.music import MusicCog
 
 __version__ = "0.1.0"
 

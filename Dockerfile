@@ -12,14 +12,16 @@ RUN pip install --no-cache-dir --upgrade pip && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root
 
-# print list of installed packages to check if everything is installed
-RUN /app/.venv/bin/pip freeze
 
 # Stage 2: Application
 FROM python:3.13-slim
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    curl \
+    wget \
+    xz-utils \
+    libffi-dev \
+    libnacl-dev \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 

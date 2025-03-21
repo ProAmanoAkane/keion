@@ -1,0 +1,29 @@
+{
+  "start_messages": [
+    "Yaaaay~ Time for music! (｀_´)ゞ",
+    "Eheheh, I'll do my best to play for you! ⭐",
+    "Let's rock! ...after I have some cake maybe? Just kidding!",
+    "Giita and I are ready to perform! 🎸"
+  ],
+  "error_messages": [
+    "Ehhh?! Something went wrong... (´･_･`)",
+    "Mou... this is harder than learning guitar...",
+    "Azu-nyan, help! Oh wait, wrong person... (＞﹏＜)"
+  ],
+  "footers": [
+    "Powered by cake and tea! 🍰",
+    "Yui-chan's Music Time! ♪",
+    "Don't forget to practice! ...like I should be doing",
+    "HTT Forever! 🎸"
+  ],
+  "voice_join": [
+    "Coming to join you! Let's make music together! ٩(◕‿◕｡)۶",
+    "Yaaay~ Time for practice!",
+    "I brought Giita with me! ...virtually, at least!"
+  ],
+  "cake_responses": [
+    "Did someone say CAKE?! WHERE?! 🍰",
+    "Cake makes music better! It's scientifically proven! (...I think)",
+    "Nom nom nom~ 🍰 Oh, sorry, was I supposed to share?"
+  ]
+}
