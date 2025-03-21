@@ -1,78 +1,103 @@
-# Keion Discord Music Bot
+# Keion Discord Music Bot 🎸🍰
 
-A Discord music bot built with discord.py that plays music from YouTube in voice channels.
+Hey there! 👋 Welcome to the Keion Discord Music Bot, your personal Yui Hirasawa (from K-On!) inspired companion for bringing music and fun to your Discord server! This bot strums its way into voice channels to play your favorite tunes from YouTube, all while keeping the spirit of the Light Music Club alive!
 
-## Features
+## Features ✨
 
-- Play music from YouTube URLs or search queries
-- Queue system with loop functionality (queue/song)
-- Basic playback controls (play, pause, resume, skip, stop)
-- Volume control
-- Queue management
+-   Plays music from YouTube URLs or search queries (just like finding the perfect guitar riff!)
+-   Manages a queue system with loop functionality (for those songs you just can't get enough of!)
+-   Offers basic playback controls: play, pause, resume, skip, stop (because even Yui needs to control the music sometimes!)
+-   Includes volume control (gotta make sure everyone can hear Giita!)
+-   Handles queue management (organizing songs is almost as important as cake!)
 
-## Prerequisites
+## Prerequisites 📝
 
-- Python 3.12 or higher
-- Docker and Docker Compose
-- Poetry (for development)
+Before we get started, make sure you have these installed:
 
-## Setup
+-   Python 3.12 or higher (gotta have the right tools!)
+-   Docker and Docker Compose (for easy deployment!)
+-   Poetry (for managing dependencies like a pro!)
 
-1. **Clone the repository and navigate to the project directory**
+## Setup 🚀
 
-2. **Configure the bot token**
+Let's get this show on the road!
 
-   Copy the example environment file and add your Discord bot token:
+1.  **Clone the repository and navigate to the project directory**
 
-   ```bash
-   cp .env.example .env
-   ```
+    ```bash
+    git clone [repository URL]
+    cd keion
+    ```
 
-   Edit `.env` and add your Discord bot token:
-   ```
-   DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
-   ```
+2.  **Configure the bot token**
 
-3. **Running with Docker Compose**
+    Grab your Discord bot token and add it to the `.env` file:
 
-   Build and start the bot:
-   ```bash
-   docker compose up --build
-   ```
+    ```bash
+    cp .env.example .env
+    ```
 
-   To run in detached mode:
-   ```bash
-   docker compose up -d
-   ```
+    Edit `.env` and add your Discord bot token:
 
-## Development Setup
+    ```
+    DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
+    ```
 
-1. **Install Poetry**
-   ```bash
-   curl -sSL https://install.python-poetry.org | python3 -
-   ```
+3.  **Running with Docker Compose**
 
-2. **Install dependencies**
-   ```bash
-   poetry install
-   ```
+    Build and start the bot with a single command:
 
-3. **Run the bot**
-   ```bash
-   poetry run python src/main.py
-   ```
+    ```bash
+    docker compose up --build
+    ```
 
-## Bot Commands
+    To run in detached mode (so it keeps playing even when you close the terminal!):
 
-- `/play <url/query>` - Play a song from YouTube
-- `/pause` - Pause the current song
-- `/resume` - Resume playback
-- `/skip` - Skip the current song
-- `/stop` - Stop playback and leave the voice channel
-- `/queue` - Show the current queue
-- `/loop [queue/song]` - Toggle loop mode for queue or current song
+    ```bash
+    docker compose up -d
+    ```
 
-## Project Structure
+## Development - Let's Jam! 🎶
+
+Want to contribute or tweak the bot? Awesome! Here's how to get started:
+
+1.  **Install Poetry**
+
+    If you don't have Poetry yet, get it here:
+
+    ```bash
+    curl -sSL https://install.python-poetry.org | python3 -
+    ```
+
+2.  **Install dependencies**
+
+    Use Poetry to install all the required packages:
+
+    ```bash
+    poetry install
+    ```
+
+3.  **Run the bot**
+
+    Now you're ready to launch the bot!
+
+    ```bash
+    poetry run python src/main.py
+    ```
+
+## Bot Commands 🎤
+
+Here's a list of commands you can use with the bot:
+
+-   `/play <url/query>` - Play a song from YouTube (let's find some awesome tunes!)
+-   `/pause` - Pause the current song (time for a tea break!)
+-   `/resume` - Resume playback (back to the music!)
+-   `/skip` - Skip the current song (not feeling this one? No problem!)
+-   `/stop` - Stop playback and leave the voice channel (time to practice!)
+-   `/queue` - Show the current queue (what's up next?)
+-   `/loop [queue/song]` - Toggle loop mode for queue or current song (repeat after me!)
+
+## Project Structure 🏗️
 
 ```
 keion/
