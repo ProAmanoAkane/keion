@@ -5,9 +5,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      cache_from:
+        - k_on:latest
     env_file:
       - .env
     init: true
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
     security_opt:
       - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import discord"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    tmpfs:
+      - /tmp

@@ -35,7 +35,9 @@ COPY src ./src
 COPY entrypoint.sh ./
 
 # Set up environment variables and add venv to PATH
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 # Make entrypoint.sh executable
 RUN chmod +x entrypoint.sh
