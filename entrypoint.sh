@@ -1,17 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
-# Download FFmpeg binary directly
-FFMPEG_URL="https://github.com/yt-dlp/FFmpeg-Builds/releases/download/2024-02-28-git-61845112/ffmpeg-master-latest-linux64-gpl-61845112"
-FFMPEG_BIN="/usr/local/bin/ffmpeg"
+# Download FFmpeg tarball
+FFMPEG_URL="https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
+LOCAL_BIN_DIR="/usr/local/bin/"
 
-if ! curl -sSL "${FFMPEG_URL}" -o "${FFMPEG_BIN}"; then
-    echo "Failed to download FFmpeg"
+if ! wget -q "${FFMPEG_URL}" -O "ffmpeg.tar.xz"; then
+    echo "Failed to download FFmpeg tarball"
     exit 1
 fi
 
+# Extract the tarball
+mkdir -p ffmpeg
+tar -xf ffmpeg.tar.xz -C ffmpeg --strip-components=1
+
+# Move the binary to /usr/local/bin
+mv ffmpeg/bin/ffmpeg "${LOCAL_BIN_DIR}"
+
 # Make the binary executable
-chmod +x "${FFMPEG_BIN}"
+chmod +x "${LOCAL_BIN_DIR}/ffmpeg"
 
 # Verify installation
 if ! command -v ffmpeg >/dev/null 2>&1; then
@@ -21,5 +28,5 @@ fi
 
 echo "FFmpeg installed successfully."
 
-# Execute the application
+# Run the command passed to the entrypoint
 exec "$@"
