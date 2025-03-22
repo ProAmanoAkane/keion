@@ -18,7 +18,14 @@ class EmbedBuilder:
         """Create a Now Playing embed."""
         title = song_info["title"]
         duration = song_info.get("duration")
-        artist = song_info.get("artist") or song_info.get("uploader", "Unknown Artist")
+        
+        # Use Spotify metadata if available
+        if spotify_meta := song_info.get("spotify_metadata"):
+            artist = ", ".join(artist["name"] for artist in spotify_meta["artists"])
+            thumbnail_url = spotify_meta["album"]["images"][0]["url"] if spotify_meta["album"]["images"] else None
+        else:
+            artist = song_info.get("artist") or song_info.get("uploader", "Unknown Artist")
+            thumbnail_url = song_info.get("thumbnail")
         
         duration_str = self._format_duration(duration)
         
@@ -29,7 +36,7 @@ class EmbedBuilder:
             inline=False
         )
         
-        if thumbnail_url := song_info.get("thumbnail"):
+        if thumbnail_url:
             embed.set_thumbnail(url=thumbnail_url)
             
         embed.set_footer(text=random.choice(self.messages["footers"]))

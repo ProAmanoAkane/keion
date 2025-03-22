@@ -10,12 +10,12 @@ requires-python = ">=3.12"
 dependencies = [
     "discord-py[voice] (>=2.5.2,<3.0.0)",
     "yt-dlp (>=2025.2.19,<2026.0.0)",
-    "asyncio (>=3.4.3,<4.0.0)"
+    "asyncio (>=3.4.3,<4.0.0)",
+    "requests (>=2.32.3,<3.0.0)"
 ]
 
 [tool.poetry]
 packages = [{include = "keion", from = "src"}]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
