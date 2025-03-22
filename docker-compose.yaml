@@ -1,5 +1,6 @@
+version: '3.8'
 services:
-  app:
+  keion:
     container_name: keion
     image: k_on
     build:
@@ -25,3 +26,7 @@ services:
       retries: 3
     tmpfs:
       - /tmp
+    volumes:
+      - ffmpeg-cache:/var/cache/ffmpeg
+volumes:
+  ffmpeg-cache:

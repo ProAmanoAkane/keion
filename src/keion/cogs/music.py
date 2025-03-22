@@ -1,6 +1,7 @@
-"""Music player cog for the Discord bot."""
+"""Music playback cog implementation."""
 
 import asyncio
+import logging
 from typing import Optional
 import yt_dlp
 from urllib.parse import urlparse
@@ -14,6 +15,7 @@ from ..utils.embed import EmbedBuilder
 from ..utils.audio import youtube_dl_options, ffmpeg_opts
 from ..utils.spotify_client import SpotifyClient
 
+logger = logging.getLogger(__name__)
 
 class MusicCog(commands.Cog):
     """A Discord cog that provides music playback functionality."""
@@ -33,15 +35,17 @@ class MusicCog(commands.Cog):
         self.cache = SongCache()
         self.embed_builder = EmbedBuilder()
         self.spotify_client = SpotifyClient()
+        logger.info("Music cog initialized")
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Event handler for when the bot is ready."""
-        print(f"Music module initialized for {self.bot.user}!")
+        logger.info("Music module ready for bot: %s", self.bot.user)
 
     # Core functionality methods
     async def get_music_info(self, query: str) -> dict:
         """Fetch music information from URL or search query."""
+        logger.debug("Fetching music info for query: %s", query)
         loop = asyncio.get_event_loop()
 
         def is_valid_url(url: str) -> bool:
@@ -92,6 +96,9 @@ class MusicCog(commands.Cog):
 
     async def play_song(self, context: Context, song_info: dict) -> None:
         """Play a song in the voice channel."""
+        logger.info("Playing song: %s in guild: %s", 
+                   song_info.get('title', 'Unknown'), 
+                   context.guild.name if context.guild else 'Unknown')
         url = song_info["url"]
         self.current_song = song_info
 
@@ -106,7 +113,7 @@ class MusicCog(commands.Cog):
     def play_next(self, context: Context, error: Exception = None) -> None:
         """Handle playing the next song in queue."""
         if error:
-            print(f"Playback error: {error}")
+            logger.error("Error during playback: %s", str(error), exc_info=error)
 
         if self.loop_song and self.current_song:
             asyncio.run_coroutine_threadsafe(
