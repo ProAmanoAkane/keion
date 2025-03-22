@@ -1,7 +1,32 @@
 """Cache management utilities for the music bot."""
 
-import time
+from functools import lru_cache
 from typing import Dict, Any, Optional
+import time
+
+# LRU cache for frequently accessed data
+@lru_cache(maxsize=100)
+def cache_song_info(url: str) -> dict:
+    """Cache song metadata to reduce API calls."""
+    # ... implementation
+    pass
+
+# Time-based cache for temporary data
+class TimeCache:
+    def __init__(self, ttl: int = 300):  # 5 minutes default TTL
+        self._cache = {}
+        self._ttl = ttl
+
+    def get(self, key: str) -> Optional[Any]:
+        if key in self._cache:
+            data, timestamp = self._cache[key]
+            if time.time() - timestamp < self._ttl:
+                return data
+            del self._cache[key]
+        return None
+
+    def set(self, key: str, value: Any) -> None:
+        self._cache[key] = (value, time.time())
 
 class SongCache:
     """LRU cache implementation for song information."""
