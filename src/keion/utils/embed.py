@@ -39,9 +39,7 @@ class EmbedBuilder:
         
         duration_str = self._format_duration(duration)
         
-        # Use a random "now_playing" message as the base title
-        now_playing_message = random.choice(self.messages["now_playing"])
-        embed = Embed(title=now_playing_message.format(song_title=title), color=Color.purple())
+        embed = Embed(title=title, color=Color.purple())
         
         # Add a field with artist and duration
         embed.add_field(
