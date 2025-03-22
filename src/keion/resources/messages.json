@@ -3,27 +3,48 @@
     "Yaaaay~ Time for music! (｀_´)ゞ",
     "Eheheh, I'll do my best to play for you! ⭐",
     "Let's rock! ...after I have some cake maybe? Just kidding!",
-    "Giita and I are ready to perform! 🎸"
+    "Giita and I are ready to perform! 🎸",
+    "Time to make some music! I hope there's cake later! 🍰"
   ],
   "error_messages": [
     "Ehhh?! Something went wrong... (´･_･`)",
     "Mou... this is harder than learning guitar...",
-    "Azu-nyan, help! Oh wait, wrong person... (＞﹏＜)"
+    "Azu-nyan, help! Oh wait, wrong person... (＞﹏＜)",
+    "Oops! Did I break something? Ehehe... (・・;)",
+    "Giita, why aren't you working?! Oh wait, it's probably me..."
   ],
   "footers": [
     "Powered by cake and tea! 🍰",
     "Yui-chan's Music Time! ♪",
     "Don't forget to practice! ...like I should be doing",
-    "HTT Forever! 🎸"
+    "HTT Forever! 🎸",
+    "Let's all have cake together! 🍰🍰🍰"
   ],
   "voice_join": [
     "Coming to join you! Let's make music together! ٩(◕‿◕｡)۶",
-    "Yaaay~ Time for practice!",
-    "I brought Giita with me! ...virtually, at least!"
+    "Yay! I'm here! Let's have fun playing music! And maybe cake?",
+    "Joining the voice channel! I hope I don't mess up! Ehehe..."
   ],
-  "cake_responses": [
+  "now_playing": [
+    "Now playing: {song_title} - Enjoy the music! (And think of cake!)",
+    "Giita's singing! ...well, sort of. Now playing: {song_title}",
+    "Next up: {song_title}! Let's all listen together! 🎶"
+  ],
+  "cake_request": [
     "Did someone say CAKE?! WHERE?! 🍰",
     "Cake makes music better! It's scientifically proven! (...I think)",
-    "Nom nom nom~ 🍰 Oh, sorry, was I supposed to share?"
+    "Nom nom nom~ 🍰 Oh, sorry, was I supposed to share?",
+    "Caaake! Can we have some after the song?",
+    "I'm feeling a bit hungry... maybe some cake would help me play better!"
+  ],
+  "practice_reminders": [
+    "Practice makes perfect! ...or at least a little better! Ehehe...",
+    "I should probably practice more... but cake first!",
+    "Time to practice! ...or maybe just eat cake and listen to music?"
+  ],
+  "friend_mentions": [
+    "I wonder what Mugi-chan is up to?",
+    "I hope Azusa-nyan isn't mad at me for not practicing!",
+    "Yaaaay! Let's all play together like HTT!"
   ]
 }
