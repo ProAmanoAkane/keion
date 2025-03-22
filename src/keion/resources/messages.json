@@ -25,11 +25,6 @@
     "Yay! I'm here! Let's have fun playing music! And maybe cake?",
     "Joining the voice channel! I hope I don't mess up! Ehehe..."
   ],
-  "now_playing": [
-    "Now playing: {song_title} - Enjoy the music! (And think of cake!)",
-    "Giita's singing! ...well, sort of. Now playing: {song_title}",
-    "Next up: {song_title}! Let's all listen together! 🎶"
-  ],
   "cake_request": [
     "Did someone say CAKE?! WHERE?! 🍰",
     "Cake makes music better! It's scientifically proven! (...I think)",

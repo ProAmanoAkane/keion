@@ -20,6 +20,6 @@ youtube_dl_options: Dict[str, str] = {
 }
 
 ffmpeg_opts: Dict[str, str] = {
-    "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
-    "options": "-vn -c:a libopus -b:a 96k -bufsize 64k",
+    "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -thread_queue_size 4096",
+    "options": "-vn -c:a libopus -b:a 96k -bufsize 64k -threads 2 -application lowdelay"
 }
