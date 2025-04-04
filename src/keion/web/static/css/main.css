@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* K-ON! Theme */
+:root {
+    --sakura-pink: #FFB7C5;
+    --tea-brown: #D4A017;
+    --guitar-red: #FF6B6B;
+}
+
+body {
+    background: linear-gradient(135deg, #FDF2F7 0%, #EDF2FF 100%);
+    background-attachment: fixed;
+    font-family: 'Comic Neue', cursive;
+}
+
+.font-comic {
+    font-family: 'Comic Neue', cursive;
+}
+
+/* Custom button style */
+.tea-button {
+    @apply inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md 
+           shadow-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 
+           focus:ring-offset-2 focus:ring-pink-500;
+}
+
+.tea-button:active {
+    @apply scale-95;
+}
+
+/* Card animations */
+.card-hover {
+    @apply transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
+
+/* Status indicators */
+.status-playing {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-pink-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-pink-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-pink-500;
+}
+
+/* Loading animation */
+.loading-tea {
+    position: relative;
+}
+
+.loading-tea::after {
+    content: '🍵';
+    position: absolute;
+    right: -20px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+
+/* Hover effects */
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Loading animation */
+.loading {
+    @apply animate-pulse bg-gray-200;
+}
+
+/* Card transitions */
+.card-transition {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+/* Button transitions */
+button {
+    transition: all 0.2s ease-in-out;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Player card animations */
+.player-card {
+    transition: transform 0.3s ease-in-out;
+}
+
+.player-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Progress bar animation */
+.progress-bar {
+    transition: width 0.3s ease-in-out;
+}
+
+/* Status indicator pulse */
+.status-playing {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Toast animations */
+@keyframes slideIn {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.toast {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Input focus styles */
+.input-focus {
+    @apply transition-all duration-200 ease-in-out;
+    @apply focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+}
+
+/* Form element styles */
+.form-input {
+    @apply px-4 py-2 rounded-lg border border-gray-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+    @apply transition-all duration-200;
+}
+
+/* Your existing custom styles (if any) */
+
+/* --- K-on Theme Styles (Easter Egg) --- */
+.k-on-theme {
+    /* Override background gradient */
+    background-image: linear-gradient(to bottom right, #ffcce7 !important, #f3e5f5 !important); /* Light pink to light purple */
+    color: #374151 !important; /* Dark gray from Tailwind */
+}
+
+.k-on-theme nav {
+    background-image: linear-gradient(to right, #ff80ab !important, #e040fb !important); /* Brighter pink to purple */
+}
+
+.k-on-theme nav .bg-white\/20 {
+    background-color: rgba(255, 255, 255, 0.3) !important; /* Slightly darker white */
+}
+
+.k-on-theme nav h1 {
+    color: #ffffff !important; /* White text in nav */
+}
+
+.k-on-theme nav .text-sm.px-3.py-1.bg-white\/20.rounded-full {
+    background-color: rgba(255, 255, 255, 0.4) !important; /* Slightly darker white */
+}
+
+.k-on-theme main {
+    /* Adjust main content background if needed */
+}
+
+.k-on-theme .button {
+    background-color: #ffe082 !important; /* Light yellow */
+    color: #2d3748 !important; /* Darker gray from Tailwind */
+    border: 1px solid #fdd835 !important;
+}
+
+.k-on-theme .button:hover {
+    background-color: #fff176 !important;
+}
+
+/* Example for player cards - you'll need to inspect your HTML structure */
+.k-on-theme .player-card { /* Adjust selector based on your actual class */
+    background-color: #b3e5fc !important; /* Light blue */
+    border: 1px solid #81d4fa !important;
+}
+
+/* Example for stats cards */
+.k-on-theme .stats-card { /* Adjust selector based on your actual class */
+    background-color: #a5d6a7 !important; /* Light green */
+    border: 1px solid #8bc34a !important;
+}
+
+/* You'll likely need to add more specific rules based on the elements in your components */
+
+.k-on-theme {
+    background-color: theme('colors.pink.100') !important;
+    color: theme('colors.gray.700') !important;
+}
+
+.k-on-theme nav {
+    background-image: linear-gradient(to right, theme('colors.pink.400') !important, theme('colors.purple.500') !important);
+}
+
+.k-on-theme nav h1 {
+    color: theme('colors.white') !important;
+}
+
+.k-on-theme .button {
+    background-color: theme('colors.yellow.200') !important;
+    color: theme('colors.gray.800') !important;
+    border-color: theme('colors.yellow.400') !important;
+}

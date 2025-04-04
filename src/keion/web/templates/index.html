@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4">
+    <!-- Left Column: Stats -->
+    <div class="lg:col-span-1">
+        <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6 sticky top-24">
+            <h2 class="text-xl font-bold mb-4 text-purple-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Bot Statistics
+            </h2>
+            <div id="stats-container" data-stats>
+                {% include "components/stats.html" %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Players and Input -->
+    <div class="lg:col-span-2">
+        <!-- Song Input Form -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4 text-purple-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Song
+            </h2>
+            <form 
+                hx-post="/api/player/add"
+                hx-target="#players-container"
+                class="flex space-x-2"
+            >
+                <input 
+                    type="text" 
+                    name="query" 
+                    placeholder="Enter URL or search term..."
+                    class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    required
+                >
+                <button 
+                    type="submit"
+                    class="tea-button bg-purple-500 hover:bg-purple-600 text-white"
+                >
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                    Play
+                </button>
+            </form>
+        </div>
+
+        <!-- Players List -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4 text-purple-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                </svg>
+                Active Players
+            </h2>
+            <div id="players-container" data-players>
+                {% include "components/players.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
