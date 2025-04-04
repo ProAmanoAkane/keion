@@ -22,6 +22,9 @@ packages = [{ include = "keion", from = "src" }]
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
 ruff = "^0.11.3"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+pytest-cov = "^6.1.0"
 
 [tool.black]
 line-length = 88
@@ -65,6 +68,12 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+pythonpath = "."
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
