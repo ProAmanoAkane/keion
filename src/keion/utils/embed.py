@@ -24,10 +24,14 @@ class EmbedBuilder:
     
     def now_playing(self, song_info: dict) -> Embed:
         """Create a Now Playing embed."""
-        logger.debug("Creating Now Playing embed for song: %s", 
-                    song_info.get('title', 'Unknown'))
         title = song_info["title"]
-        duration = song_info.get("duration")
+        url = song_info.get("webpage_url", song_info.get("url", ""))
+        
+        embed = Embed(
+            title=title,  # Plain title
+            description=f"[View on YouTube]({url})",  # Link in description
+            color=Color.purple()
+        )
         
         # Use Spotify metadata if available
         if spotify_meta := song_info.get("spotify_metadata"):
@@ -37,13 +41,12 @@ class EmbedBuilder:
             artist = song_info.get("artist") or song_info.get("uploader", "Unknown Artist")
             thumbnail_url = song_info.get("thumbnail")
         
+        duration = song_info.get("duration")
         duration_str = self._format_duration(duration)
-        
-        embed = Embed(title=title, color=Color.purple())
         
         # Add a field with artist and duration
         embed.add_field(
-            name="Artist:", # Changed from title to artist
+            name="Artist:",
             value=f"🎤 {artist}\n⏱️ Duration: {duration_str}",
             inline=False
         )
