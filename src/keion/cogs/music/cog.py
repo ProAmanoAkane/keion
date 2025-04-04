@@ -1,15 +1,19 @@
 """Music playback cog implementation."""
 
 import logging
+
+from discord import Color, Embed, Member, VoiceState
 from discord.ext import commands
 from discord.ext.commands import Context
-from discord import Embed, Color, Member, VoiceState
+
+from keion.utils.constants import MAX_PLAYLIST_DISPLAY
 
 from .player_manager import PlayerManager
 from .playlist_manager import PlaylistManager
 from .voice_manager import VoiceManager
 
 logger = logging.getLogger(__name__)
+
 
 class MusicCog(commands.Cog):
     """A Discord cog that provides music playback functionality."""
@@ -19,7 +23,9 @@ class MusicCog(commands.Cog):
         self.bot = bot
         self.playlist_manager = PlaylistManager()
         self.voice_manager = VoiceManager()
-        self.player_manager = PlayerManager(bot, self.playlist_manager, self.voice_manager)
+        self.player_manager = PlayerManager(
+            bot, self.playlist_manager, self.voice_manager
+        )
         logger.info("Music cog initialized")
 
     @commands.Cog.listener()
@@ -28,7 +34,9 @@ class MusicCog(commands.Cog):
         logger.info("Music module ready for bot: %s", self.bot.user)
 
     @commands.Cog.listener()
-    async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState) -> None:
+    async def on_voice_state_update(
+        self, member: Member, before: VoiceState, after: VoiceState
+    ) -> None:
         """Handle voice state updates."""
         await self.voice_manager.handle_voice_state_update(member, before, after)
 
@@ -39,7 +47,9 @@ class MusicCog(commands.Cog):
         self.playlist_manager.add_to_queue(info)
 
         if not self.voice_manager.voice_clients[context.guild.id].is_playing():
-            await self.player_manager.play_song(context, self.playlist_manager.get_next_song())
+            await self.player_manager.play_song(
+                context, self.playlist_manager.get_next_song()
+            )
         else:
             embed = Embed(title="🎵 Added to Queue", color=Color.green())
             embed.add_field(
@@ -97,18 +107,21 @@ class MusicCog(commands.Cog):
     @commands.command()
     async def queue(self, context: Context) -> None:
         """Display the current queue and loop status."""
-        if not self.playlist_manager.playlist and not self.playlist_manager.current_song:
+        if (
+            not self.playlist_manager.playlist
+            and not self.playlist_manager.current_song
+        ):
             await context.send("📝 The queue is empty!")
             return
 
         embed = Embed(title="📝 Current Queue", color=Color.blue())
-        
+
         # Show current song
         if self.playlist_manager.current_song:
             embed.add_field(
                 name="🎵 Now Playing",
                 value=f"{self.playlist_manager.current_song['title']}",
-                inline=False
+                inline=False,
             )
 
         # Show queue
@@ -120,11 +133,17 @@ class MusicCog(commands.Cog):
             )
 
         # Show remaining count
-        if len(self.playlist_manager.playlist) > 10:
-            embed.set_footer(text=f"And {len(self.playlist_manager.playlist) - 10} more songs...")
+        if len(self.playlist_manager.playlist) > MAX_PLAYLIST_DISPLAY:
+            embed.set_footer(
+                text=f"And {len(self.playlist_manager.playlist) - 10} more songs..."
+            )
 
         # Show loop status
-        loop_status = "🔁 Queue" if self.playlist_manager.loop_queue else "🔂 Song" if self.playlist_manager.loop_song else "❌ Off"
+        loop_status = (
+            "🔁 Queue"
+            if self.playlist_manager.loop_queue
+            else "🔂 Song" if self.playlist_manager.loop_song else "❌ Off"
+        )
         embed.add_field(name="Loop Status", value=loop_status, inline=False)
 
         await context.send(embed=embed)

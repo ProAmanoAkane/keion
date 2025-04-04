@@ -2,9 +2,7 @@
 name = "keion"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Your Name",email = "you@example.com"}
-]
+authors = [{ name = "Your Name", email = "you@example.com" }]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -15,11 +13,68 @@ dependencies = [
     "uvloop (>=0.21.0,<0.22.0)",
     "aiodns (>=3.2.0,<4.0.0)",
     "brotli (>=1.1.0,<2.0.0)",
-    "orjson (>=3.10.15,<4.0.0)"
+    "orjson (>=3.10.15,<4.0.0)",
 ]
 
 [tool.poetry]
-packages = [{include = "keion", from = "src"}]
+packages = [{ include = "keion", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+ruff = "^0.11.3"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+pytest-cov = "^6.1.0"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+
+[tool.ruff]
+# Base configuration
+target-version = "py312"
+line-length = 88
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP", "PL", "RUF"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+pythonpath = "."
+asyncio_mode = "auto"
+filterwarnings = ["ignore:'audioop' is deprecated:DeprecationWarning"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

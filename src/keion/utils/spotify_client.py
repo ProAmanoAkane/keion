@@ -1,9 +1,12 @@
 """Spotify API client implementation."""
 
 import os
-import requests
-from typing import Dict, Any, Tuple
+from typing import Any
 from urllib.parse import urlencode
+
+import requests
+
+from .constants import HTTP_OK, HTTP_UNAUTHORIZED
 
 
 class SpotifyAPIError(Exception):
@@ -23,7 +26,7 @@ class SpotifyClient:
         if not all([self.client_id, self.client_secret]):
             raise ValueError("Spotify credentials not found in environment")
 
-        self._secrets: Tuple[str, str] = (self.client_id, self.client_secret)
+        self._secrets: tuple[str, str] = (self.client_id, self.client_secret)
         self._session = requests.Session()
 
         # Set up session with initial headers
@@ -49,34 +52,34 @@ class SpotifyClient:
             auth=self._secrets,
         )
 
-        if response.status_code != 200:
+        if response.status_code != HTTP_OK:
             raise SpotifyAPIError("Failed to authenticate with Spotify")
 
         return response.json()["access_token"]
 
     def _refresh_token_if_needed(self, response: requests.Response) -> bool:
         """Refresh token if expired and update session headers."""
-        if response.status_code == 401:
+        if response.status_code == HTTP_UNAUTHORIZED:
             token = self._get_token()
             self._session.headers.update({"Authorization": f"Bearer {token}"})
             return True
         return False
 
-    def get_track_info(self, track_id: str) -> Dict[str, Any]:
+    def get_track_info(self, track_id: str) -> dict[str, Any]:
         """Get track information from Spotify API."""
         response = self._session.get(f"https://api.spotify.com/v1/tracks/{track_id}")
 
         if self._refresh_token_if_needed(response):
             return self.get_track_info(track_id)
 
-        if response.status_code != 200:
+        if response.status_code != HTTP_OK:
             raise SpotifyAPIError(
                 f"Failed to fetch track information: {response.status_code}"
             )
 
         return response.json()
 
-    def search_track(self, query: str) -> Dict[str, Any]:
+    def search_track(self, query: str) -> dict[str, Any]:
         """Search for a track on Spotify."""
         params = urlencode({"q": query, "type": "track", "limit": 1})
         response = self._session.get(f"https://api.spotify.com/v1/search?{params}")
@@ -84,7 +87,7 @@ class SpotifyClient:
         if self._refresh_token_if_needed(response):
             return self.search_track(query)
 
-        if response.status_code != 200:
+        if response.status_code != HTTP_OK:
             raise SpotifyAPIError(f"Failed to search for track: {response.status_code}")
 
         return response.json()

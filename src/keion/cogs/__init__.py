@@ -2,4 +2,4 @@
 
 from .music import MusicCog
 
-__all__ = ['MusicCog']
+__all__ = ["MusicCog"]
