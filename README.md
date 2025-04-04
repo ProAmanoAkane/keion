@@ -87,39 +87,54 @@ Want to contribute or tweak the bot? Awesome! Here's how to get started:
 
 ## Bot Commands 🎤
 
-Here's a list of commands you can use with the bot:
+Here's a list of commands you can use with the bot (prefix can be either `!` or `/`):
 
--   `/play <url/query>` - Play a song from YouTube (let's find some awesome tunes!)
--   `/pause` - Pause the current song (time for a tea break!)
--   `/resume` - Resume playback (back to the music!)
--   `/skip` - Skip the current song (not feeling this one? No problem!)
--   `/stop` - Stop playback and leave the voice channel (time to practice!)
--   `/queue` - Show the current queue (what's up next?)
--   `/loop [queue/song]` - Toggle loop mode for queue or current song (repeat after me!)
+-   `play <url/query>` - Play a song from YouTube or Spotify (let's find some awesome tunes!)
+-   `pause` - Pause the current song (time for a tea break!)
+-   `resume` - Resume playback (back to the music!)
+-   `skip` - Skip the current song (not feeling this one? No problem!)
+-   `stop` - Stop playback and clear the queue (time for a break!)
+-   `queue` - Show the current queue and loop status (what's coming up next?)
+-   `loop [queue/song]` - Toggle loop mode for queue or current song (repeat after me!)
 
 ## Project Structure 🏗️
 
 ```
 keion/
 ├── src/
-│   ├── keion/
-│   │   ├── __init__.py      # Bot initialization
-│   │   └── music_cog.py     # Music player implementation
-│   └── main.py              # Entry point
-├── docker-compose.yaml
-├── Dockerfile
-├── entrypoint.sh
-├── pyproject.toml
-└── poetry.lock
+│   ├── main.py              # Entry point
+│   └── keion/
+│       ├── __init__.py      # Bot initialization
+│       ├── cogs/
+│       │   ├── __init__.py
+│       │   └── music/       # Music functionality
+│       │       ├── __init__.py
+│       │       ├── cog.py
+│       │       ├── player_manager.py
+│       │       ├── playlist_manager.py
+│       │       └── voice_manager.py
+│       ├── resources/
+│       │   └── messages.json # Bot messages and responses
+│       └── utils/
+│           ├── __init__.py
+│           ├── audio.py     # Audio processing utilities
+│           ├── cache.py     # Caching system
+│           ├── embed.py     # Discord embed builders
+│           ├── logging.py   # Logging configuration
+│           └── spotify_client.py  # Spotify integration
 ```
 
 ## Technical Details
 
 - Built with discord.py 2.5+
 - Uses yt-dlp for YouTube integration
+- Spotify integration for playing tracks from Spotify links
+- Smart voice channel management with auto-disconnect
+- Queue and song loop functionality
 - FFmpeg for audio processing
 - Docker multi-stage build for optimized container size
 - Poetry for dependency management
+- Custom caching system for improved performance
 
 ## License
 
