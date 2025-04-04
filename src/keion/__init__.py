@@ -2,6 +2,7 @@
 
 import discord
 from discord.ext import commands
+
 from .cogs.music import MusicCog
 
 __version__ = "0.1.0"

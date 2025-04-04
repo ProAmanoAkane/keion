@@ -4,7 +4,8 @@ import json
 import logging
 import random
 from pathlib import Path
-from discord import Embed, Color
+
+from discord import Color, Embed
 
 logger = logging.getLogger(__name__)
 

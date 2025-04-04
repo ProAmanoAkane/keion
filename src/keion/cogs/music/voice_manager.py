@@ -1,10 +1,10 @@
 """Voice connection manager for the music bot."""
 
-import logging
 import asyncio
-from typing import Dict
-from discord import VoiceClient, VoiceState, Member
-from discord.ext.commands import Context, CommandError
+import logging
+
+from discord import Member, VoiceClient, VoiceState
+from discord.ext.commands import CommandError, Context
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +14,8 @@ class VoiceManager:
 
     def __init__(self) -> None:
         """Initialize the voice manager."""
-        self.voice_clients: Dict[int, VoiceClient] = {}
-        self.inactivity_timers: Dict[int, asyncio.Task] = {}
+        self.voice_clients: dict[int, VoiceClient] = {}
+        self.inactivity_timers: dict[int, asyncio.Task] = {}
         self.INACTIVITY_TIMEOUT = 120  # 2 minutes
 
     async def ensure_voice(self, context: Context) -> None:

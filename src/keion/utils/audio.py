@@ -1,8 +1,8 @@
 """Audio processing utilities for the music bot."""
 
-from typing import Dict
+from .constants import FFMPEG_BEFORE_OPTIONS, FFMPEG_OPTIONS
 
-youtube_dl_options: Dict[str, str] = {
+youtube_dl_options: dict[str, str] = {
     "format": "bestaudio[abr<=96]/bestaudio/best",
     "extractaudio": True,
     "audioformat": "opus",
@@ -20,7 +20,7 @@ youtube_dl_options: Dict[str, str] = {
     "youtube_include_hls_manifest": False,
 }
 
-ffmpeg_opts: Dict[str, str] = {
-    "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -thread_queue_size 4096",
-    "options": "-vn -c:a libopus -b:a 96k -bufsize 64k -threads 2 -application lowdelay",
+ffmpeg_opts: dict[str, str] = {
+    "before_options": FFMPEG_BEFORE_OPTIONS,
+    "options": FFMPEG_OPTIONS,
 }

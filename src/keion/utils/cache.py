@@ -1,8 +1,8 @@
 """Cache management utilities for the music bot."""
 
-from functools import lru_cache
-from typing import Dict, Any, Optional
 import time
+from functools import lru_cache
+from typing import Any
 
 
 # LRU cache for frequently accessed data
@@ -19,7 +19,7 @@ class TimeCache:
         self._cache = {}
         self._ttl = ttl
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         if key in self._cache:
             data, timestamp = self._cache[key]
             if time.time() - timestamp < self._ttl:
@@ -41,11 +41,11 @@ class SongCache:
             max_size: Maximum number of songs to cache
             ttl: Time-to-live in seconds for cache entries
         """
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: dict[str, dict[str, Any]] = {}
         self.max_size = max_size
         self.ttl = ttl
 
-    def get(self, url: str) -> Optional[dict]:
+    def get(self, url: str) -> dict | None:
         """Retrieve a song from cache if it exists and is valid."""
         if url in self._cache:
             entry = self._cache[url]

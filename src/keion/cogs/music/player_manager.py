@@ -1,17 +1,17 @@
 """Music player manager for the music bot."""
 
-import logging
 import asyncio
+import logging
 import re
-from typing import Optional
-import yt_dlp
 from urllib.parse import urlparse
-from discord import FFmpegOpusAudio, VoiceState, Member
-from discord.ext.commands import Context, Bot
 
+import yt_dlp
+from discord import FFmpegOpusAudio
+from discord.ext.commands import Bot, Context
+
+from ...utils.audio import ffmpeg_opts, youtube_dl_options
 from ...utils.cache import SongCache
 from ...utils.embed import EmbedBuilder
-from ...utils.audio import youtube_dl_options, ffmpeg_opts
 from ...utils.spotify_client import SpotifyClient
 from .playlist_manager import PlaylistManager
 from .voice_manager import VoiceManager
@@ -50,7 +50,10 @@ class PlayerManager:
         if match := re.search(spotify_track_pattern, query):
             track_id = match.group(1)
             track_info = self.spotify_client.get_track_info(track_id)
-            search_query = f"{track_info['name']} {' '.join(artist['name'] for artist in track_info['artists'])}"
+            search_query = (
+                f"{track_info['name']} "
+                f"{' '.join(artist['name'] for artist in track_info['artists'])}"
+            )
             search = await loop.run_in_executor(
                 None, self.downloader.extract_info, f"ytsearch1:{search_query}", False
             )
@@ -92,9 +95,7 @@ class PlayerManager:
         embed = self.embed_builder.now_playing(song_info)
         await context.send(embed=embed)
 
-    async def play_next(
-        self, context: Context, error: Optional[Exception] = None
-    ) -> None:
+    async def play_next(self, context: Context, error: Exception | None = None) -> None:
         """Handle playing the next song in queue."""
         if error:
             logger.error("Error during playback: %s", str(error), exc_info=error)

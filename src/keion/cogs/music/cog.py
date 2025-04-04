@@ -1,9 +1,12 @@
 """Music playback cog implementation."""
 
 import logging
+
+from discord import Color, Embed, Member, VoiceState
 from discord.ext import commands
 from discord.ext.commands import Context
-from discord import Embed, Color, Member, VoiceState
+
+from keion.utils.constants import MAX_PLAYLIST_DISPLAY
 
 from .player_manager import PlayerManager
 from .playlist_manager import PlaylistManager
@@ -130,7 +133,7 @@ class MusicCog(commands.Cog):
             )
 
         # Show remaining count
-        if len(self.playlist_manager.playlist) > 10:
+        if len(self.playlist_manager.playlist) > MAX_PLAYLIST_DISPLAY:
             embed.set_footer(
                 text=f"And {len(self.playlist_manager.playlist) - 10} more songs..."
             )
