@@ -6,7 +6,7 @@ import re
 from typing import Optional
 import yt_dlp
 from urllib.parse import urlparse
-from discord import FFmpegOpusAudio
+from discord import FFmpegOpusAudio, VoiceState, Member
 from discord.ext.commands import Context, Bot
 
 from ...utils.cache import SongCache
@@ -89,16 +89,13 @@ class PlayerManager:
         embed = self.embed_builder.now_playing(song_info)
         await context.send(embed=embed)
 
-    def play_next(self, context: Context, error: Optional[Exception] = None) -> None:
+    async def play_next(self, context: Context, error: Optional[Exception] = None) -> None:
         """Handle playing the next song in queue."""
         if error:
             logger.error("Error during playback: %s", str(error), exc_info=error)
 
         if next_song := self.playlist_manager.get_next_song():
-            asyncio.run_coroutine_threadsafe(
-                self.play_song(context, next_song), self.bot.loop
-            )
+            await self.play_song(context, next_song)
         else:
-            asyncio.run_coroutine_threadsafe(
-                self.voice_manager.disconnect(context.guild.id), self.bot.loop
-            )
+            # Start the inactivity timer instead of disconnecting immediately
+            await self.voice_manager.start_inactivity_timer(context.guild.id)

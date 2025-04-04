@@ -3,7 +3,7 @@
 import logging
 from discord.ext import commands
 from discord.ext.commands import Context
-from discord import Embed, Color
+from discord import Embed, Color, Member, VoiceState
 
 from .player_manager import PlayerManager
 from .playlist_manager import PlaylistManager
@@ -26,6 +26,11 @@ class MusicCog(commands.Cog):
     async def on_ready(self) -> None:
         """Event handler for when the bot is ready."""
         logger.info("Music module ready for bot: %s", self.bot.user)
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState) -> None:
+        """Handle voice state updates."""
+        await self.voice_manager.handle_voice_state_update(member, before, after)
 
     @commands.command()
     async def play(self, context: Context, *, query: str) -> None:
