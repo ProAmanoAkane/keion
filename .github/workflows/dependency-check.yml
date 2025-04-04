@@ -4,25 +4,32 @@ on:
   push:
     branches:
       - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
 
 jobs:
-  dependency-check:
+  security:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install poetry
         run: |
           python -m pip install --upgrade pip
-          pip install safety
+          pip install poetry safety
+
+      - name: Install dependencies
+        run: poetry install
 
       - name: Run safety check
-        run: |
-          safety check -r requirements.txt
+        run: poetry export --format requirements.txt | safety check --stdin
