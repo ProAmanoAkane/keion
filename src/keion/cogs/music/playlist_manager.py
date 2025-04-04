@@ -13,7 +13,7 @@ class PlaylistManager:
     def __init__(self) -> None:
         """Initialize the playlist manager."""
         self.playlist: List[Dict] = []
-        self.playlist_backup: List[Dict] = []
+        self.backup: List[Dict] = []
         self.current_song: Optional[Dict] = None
         self.loop_queue = False
         self.loop_song = False
@@ -25,23 +25,67 @@ class PlaylistManager:
     def clear_queue(self) -> None:
         """Clear the playlist."""
         self.playlist.clear()
+        self.backup.clear()
         self.current_song = None
 
     def get_next_song(self) -> Optional[Dict]:
         """Get the next song from the playlist."""
-        if self.loop_song and self.current_song:
-            return self.current_song
+        # Handle empty playlist
+        if not self.playlist:
+            if self.loop_queue and self.backup:
+                self.playlist = self.backup.copy()
+            elif self.loop_queue and self.current_song:
+                # If queue is empty but loop is enabled and we have a current song
+                self.playlist = [self.current_song]
+            else:
+                self.current_song = None
+                return None
 
+        # Get next song
+        next_song = self.playlist.pop(0)
+        
+        # Add song to backup if queue loop is enabled
+        if self.loop_queue and next_song not in self.backup:
+            self.backup.append(next_song)
+        
+        self.current_song = next_song
+        return next_song
+
+    def skip_current(self) -> Optional[Dict]:
+        """Skip the current song and return next song."""
+        # If there are songs in queue, prioritize them over loop
         if self.playlist:
-            return self.playlist.pop(0)
-        elif self.loop_queue:
-            self.playlist = self.playlist_backup.copy()
-            return self.get_next_song() if self.playlist else None
+            return self.get_next_song()
+        
+        # If queue is empty but loop is enabled
+        if self.loop_queue:
+            self.playlist = self.backup.copy()
+            if self.current_song in self.playlist:
+                self.playlist.remove(self.current_song)
+            return self.get_next_song()
+    
         return None
 
-    def backup_playlist(self) -> None:
-        """Create a backup of the current playlist."""
-        self.playlist_backup = self.playlist.copy()
+    def toggle_loop_queue(self) -> bool:
+        """Toggle queue loop and update backup."""
+        self.loop_queue = not self.loop_queue
+        self.loop_song = False
+        
+        if self.loop_queue:
+            # Create backup including current song
+            self.backup = self.playlist.copy()
+            if self.current_song and self.current_song not in self.backup:
+                self.backup.append(self.current_song)
+        else:
+            self.backup.clear()
+            
+        return self.loop_queue
+
+    def toggle_loop_song(self) -> bool:
+        """Toggle song loop."""
+        self.loop_song = not self.loop_song
+        self.loop_queue = False
+        return self.loop_song
 
     async def show_queue(self, context: Context) -> None:
         """Display the current playlist."""

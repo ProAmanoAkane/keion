@@ -5,6 +5,7 @@ from typing import Dict
 youtube_dl_options: Dict[str, str] = {
     "format": "bestaudio[abr<=96]/bestaudio/best",
     "extractaudio": True,
+    "audioformat": "opus",
     "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
     "quiet": True,
     "restrictfilenames": True,

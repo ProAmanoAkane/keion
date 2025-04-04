@@ -28,6 +28,7 @@ class EmbedBuilder:
                     song_info.get('title', 'Unknown'))
         title = song_info["title"]
         duration = song_info.get("duration")
+        url = song_info.get("webpage_url", song_info.get("url", ""))
         
         # Use Spotify metadata if available
         if spotify_meta := song_info.get("spotify_metadata"):
@@ -39,11 +40,14 @@ class EmbedBuilder:
         
         duration_str = self._format_duration(duration)
         
-        embed = Embed(title=title, color=Color.purple())
+        embed = Embed(
+            title=f"[{title}]({url})",
+            color=Color.purple()
+        )
         
         # Add a field with artist and duration
         embed.add_field(
-            name="Artist:", # Changed from title to artist
+            name="Artist:",
             value=f"🎤 {artist}\n⏱️ Duration: {duration_str}",
             inline=False
         )

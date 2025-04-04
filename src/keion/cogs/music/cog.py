@@ -52,6 +52,10 @@ class MusicCog(commands.Cog):
             and self.voice_manager.voice_clients[context.guild.id].is_playing()
         ):
             self.voice_manager.voice_clients[context.guild.id].stop()
+            # Force next song to be from queue if available
+            next_song = self.playlist_manager.skip_current()
+            if next_song:
+                await self.player_manager.play_song(context, next_song)
             await context.send("⏭️ Skipped the current song!")
         else:
             await context.send("❌ No song is currently playing!")
@@ -87,24 +91,51 @@ class MusicCog(commands.Cog):
 
     @commands.command()
     async def queue(self, context: Context) -> None:
-        """Display the current playlist."""
-        await self.playlist_manager.show_queue(context)
+        """Display the current queue and loop status."""
+        if not self.playlist_manager.playlist and not self.playlist_manager.current_song:
+            await context.send("📝 The queue is empty!")
+            return
+
+        embed = Embed(title="📝 Current Queue", color=Color.blue())
+        
+        # Show current song
+        if self.playlist_manager.current_song:
+            embed.add_field(
+                name="🎵 Now Playing",
+                value=f"{self.playlist_manager.current_song['title']}",
+                inline=False
+            )
+
+        # Show queue
+        for i, song in enumerate(self.playlist_manager.playlist[:10], 1):
+            embed.add_field(
+                name=f"{i}. {song['title']}",
+                value=f"Duration: {song.get('duration', '??:??')}",
+                inline=False,
+            )
+
+        # Show remaining count
+        if len(self.playlist_manager.playlist) > 10:
+            embed.set_footer(text=f"And {len(self.playlist_manager.playlist) - 10} more songs...")
+
+        # Show loop status
+        loop_status = "🔁 Queue" if self.playlist_manager.loop_queue else "🔂 Song" if self.playlist_manager.loop_song else "❌ Off"
+        embed.add_field(name="Loop Status", value=loop_status, inline=False)
+
+        await context.send(embed=embed)
 
     @commands.command()
     async def loop(self, context: Context, mode: str = "queue") -> None:
         """Toggle loop mode for queue or current song."""
         if mode == "queue":
-            self.playlist_manager.loop_queue = not self.playlist_manager.loop_queue
-            self.playlist_manager.loop_song = False
+            is_enabled = self.playlist_manager.toggle_loop_queue()
             await context.send(
-                f"🔁 Queue loop {'enabled' if self.playlist_manager.loop_queue else 'disabled'}!"
+                f"🔁 Queue loop {'enabled' if is_enabled else 'disabled'}!"
             )
-            self.playlist_manager.backup_playlist()
         elif mode == "song":
-            self.playlist_manager.loop_song = not self.playlist_manager.loop_song
-            self.playlist_manager.loop_queue = False
+            is_enabled = self.playlist_manager.toggle_loop_song()
             await context.send(
-                f"🔂 Song loop {'enabled' if self.playlist_manager.loop_song else 'disabled'}!"
+                f"🔂 Song loop {'enabled' if is_enabled else 'disabled'}!"
             )
         else:
             await context.send("❌ Invalid loop mode. Use 'queue' or 'song'!")
