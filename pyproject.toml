@@ -74,6 +74,7 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 pythonpath = "."
 asyncio_mode = "auto"
+filterwarnings = ["ignore:'audioop' is deprecated:DeprecationWarning"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
