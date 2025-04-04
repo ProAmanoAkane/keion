@@ -48,8 +48,12 @@ services:
       - PYTHONOPTIMIZE=2
       - PYTHONASYNCIODEBUG=0
       - FFMPEG_THREADS=2
+      - WEB_HOST=0.0.0.0
+      - WEB_PORT=8000
     sysctls:
       net.core.somaxconn: 1024
     shm_size: 256M
+    ports:
+      - "8000:8000"  # Web interface port
 volumes:
   ffmpeg-cache:
