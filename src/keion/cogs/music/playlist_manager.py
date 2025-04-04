@@ -7,6 +7,7 @@ from discord import Embed, Color
 
 logger = logging.getLogger(__name__)
 
+
 class PlaylistManager:
     """Manages the music playlist and queue."""
 
@@ -43,11 +44,11 @@ class PlaylistManager:
 
         # Get next song
         next_song = self.playlist.pop(0)
-        
+
         # Add song to backup if queue loop is enabled
         if self.loop_queue and next_song not in self.backup:
             self.backup.append(next_song)
-        
+
         self.current_song = next_song
         return next_song
 
@@ -56,21 +57,21 @@ class PlaylistManager:
         # If there are songs in queue, prioritize them over loop
         if self.playlist:
             return self.get_next_song()
-        
+
         # If queue is empty but loop is enabled
         if self.loop_queue:
             self.playlist = self.backup.copy()
             if self.current_song in self.playlist:
                 self.playlist.remove(self.current_song)
             return self.get_next_song()
-    
+
         return None
 
     def toggle_loop_queue(self) -> bool:
         """Toggle queue loop and update backup."""
         self.loop_queue = not self.loop_queue
         self.loop_song = False
-        
+
         if self.loop_queue:
             # Create backup including current song
             self.backup = self.playlist.copy()
@@ -78,7 +79,7 @@ class PlaylistManager:
                 self.backup.append(self.current_song)
         else:
             self.backup.clear()
-            
+
         return self.loop_queue
 
     def toggle_loop_song(self) -> bool:

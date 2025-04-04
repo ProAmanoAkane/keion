@@ -18,10 +18,13 @@ from .voice_manager import VoiceManager
 
 logger = logging.getLogger(__name__)
 
+
 class PlayerManager:
     """Manages music playback functionality."""
 
-    def __init__(self, bot: Bot, playlist_manager: PlaylistManager, voice_manager: VoiceManager) -> None:
+    def __init__(
+        self, bot: Bot, playlist_manager: PlaylistManager, voice_manager: VoiceManager
+    ) -> None:
         """Initialize the player manager."""
         self.bot = bot
         self.playlist_manager = playlist_manager
@@ -43,9 +46,7 @@ class PlayerManager:
             except ValueError:
                 return False
 
-        spotify_track_pattern = (
-            r"(?:spotify:track:|https://open\.spotify\.com/(?:intl-[a-z]{2}/)?track/)([a-zA-Z0-9]+)"
-        )
+        spotify_track_pattern = r"(?:spotify:track:|https://open\.spotify\.com/(?:intl-[a-z]{2}/)?track/)([a-zA-Z0-9]+)"
         if match := re.search(spotify_track_pattern, query):
             track_id = match.group(1)
             track_info = self.spotify_client.get_track_info(track_id)
@@ -56,7 +57,7 @@ class PlayerManager:
             info = search["entries"][0]
             info["spotify_metadata"] = track_info
             return info
-        
+
         if is_valid_url(query) and (cached_info := self.cache.get(query)):
             return cached_info
 
@@ -75,9 +76,11 @@ class PlayerManager:
 
     async def play_song(self, context: Context, song_info: dict) -> None:
         """Play a song in the voice channel."""
-        logger.info("Playing song: %s in guild: %s", 
-                   song_info.get('title', 'Unknown'), 
-                   context.guild.name if context.guild else 'Unknown')
+        logger.info(
+            "Playing song: %s in guild: %s",
+            song_info.get("title", "Unknown"),
+            context.guild.name if context.guild else "Unknown",
+        )
         url = song_info["url"]
         self.playlist_manager.current_song = song_info
 
@@ -89,7 +92,9 @@ class PlayerManager:
         embed = self.embed_builder.now_playing(song_info)
         await context.send(embed=embed)
 
-    async def play_next(self, context: Context, error: Optional[Exception] = None) -> None:
+    async def play_next(
+        self, context: Context, error: Optional[Exception] = None
+    ) -> None:
         """Handle playing the next song in queue."""
         if error:
             logger.error("Error during playback: %s", str(error), exc_info=error)

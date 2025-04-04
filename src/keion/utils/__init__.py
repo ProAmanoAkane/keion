@@ -6,10 +6,10 @@ from .embed import EmbedBuilder
 from .spotify_client import SpotifyClient, SpotifyAPIError
 
 __all__ = [
-    'youtube_dl_options', 
-    'ffmpeg_opts', 
-    'SongCache', 
-    'EmbedBuilder',
-    'SpotifyClient',
-    'SpotifyAPIError'
+    "youtube_dl_options",
+    "ffmpeg_opts",
+    "SongCache",
+    "EmbedBuilder",
+    "SpotifyClient",
+    "SpotifyAPIError",
 ]
