@@ -23,9 +23,7 @@ body {
 
 /* Custom button style */
 .tea-button {
-    @apply inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md 
-           shadow-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 
-           focus:ring-offset-2 focus:ring-pink-500;
+    @apply inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500;
 }
 
 .tea-button:active {
@@ -43,8 +41,15 @@ body {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
 /* Custom scrollbar */
@@ -64,6 +69,26 @@ body {
     @apply bg-pink-500;
 }
 
+/* Add these styles for the playlist */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #F9A8D4 #FDF2F7;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #FDF2F7;
+    border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #F9A8D4;
+    border-radius: 20px;
+}
+
 /* Loading animation */
 .loading-tea {
     position: relative;
@@ -77,8 +102,13 @@ body {
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .animate-fade-in {
@@ -86,8 +116,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .htmx-indicator {
@@ -154,9 +189,11 @@ button:active {
     0% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
+
     100% {
         opacity: 1;
     }
@@ -164,8 +201,15 @@ button:active {
 
 /* Toast animations */
 @keyframes slideIn {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .toast {
@@ -185,29 +229,47 @@ button:active {
     @apply transition-all duration-200;
 }
 
+/* Error message animation */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.error-message {
+    animation: fadeInOut 5s forwards;
+}
+
 /* Your existing custom styles (if any) */
 
 /* --- K-on Theme Styles (Easter Egg) --- */
 .k-on-theme {
     /* Override background gradient */
-    background-image: linear-gradient(to bottom right, #ffcce7 !important, #f3e5f5 !important); /* Light pink to light purple */
-    color: #374151 !important; /* Dark gray from Tailwind */
+    background-image: linear-gradient(to bottom right, #ffcce7 !important, #f3e5f5 !important);
+    /* Light pink to light purple */
+    color: #374151 !important;
+    /* Dark gray from Tailwind */
 }
 
 .k-on-theme nav {
-    background-image: linear-gradient(to right, #ff80ab !important, #e040fb !important); /* Brighter pink to purple */
+    background-image: linear-gradient(to right, #ff80ab !important, #e040fb !important);
+    /* Brighter pink to purple */
 }
 
 .k-on-theme nav .bg-white\/20 {
-    background-color: rgba(255, 255, 255, 0.3) !important; /* Slightly darker white */
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    /* Slightly darker white */
 }
 
 .k-on-theme nav h1 {
-    color: #ffffff !important; /* White text in nav */
+    color: #ffffff !important;
+    /* White text in nav */
 }
 
 .k-on-theme nav .text-sm.px-3.py-1.bg-white\/20.rounded-full {
-    background-color: rgba(255, 255, 255, 0.4) !important; /* Slightly darker white */
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    /* Slightly darker white */
 }
 
 .k-on-theme main {
@@ -215,8 +277,10 @@ button:active {
 }
 
 .k-on-theme .button {
-    background-color: #ffe082 !important; /* Light yellow */
-    color: #2d3748 !important; /* Darker gray from Tailwind */
+    background-color: #ffe082 !important;
+    /* Light yellow */
+    color: #2d3748 !important;
+    /* Darker gray from Tailwind */
     border: 1px solid #fdd835 !important;
 }
 
@@ -225,34 +289,19 @@ button:active {
 }
 
 /* Example for player cards - you'll need to inspect your HTML structure */
-.k-on-theme .player-card { /* Adjust selector based on your actual class */
-    background-color: #b3e5fc !important; /* Light blue */
+.k-on-theme .player-card {
+    /* Adjust selector based on your actual class */
+    background-color: #b3e5fc !important;
+    /* Light blue */
     border: 1px solid #81d4fa !important;
 }
 
 /* Example for stats cards */
-.k-on-theme .stats-card { /* Adjust selector based on your actual class */
-    background-color: #a5d6a7 !important; /* Light green */
+.k-on-theme .stats-card {
+    /* Adjust selector based on your actual class */
+    background-color: #a5d6a7 !important;
+    /* Light green */
     border: 1px solid #8bc34a !important;
 }
 
 /* You'll likely need to add more specific rules based on the elements in your components */
-
-.k-on-theme {
-    background-color: theme('colors.pink.100') !important;
-    color: theme('colors.gray.700') !important;
-}
-
-.k-on-theme nav {
-    background-image: linear-gradient(to right, theme('colors.pink.400') !important, theme('colors.purple.500') !important);
-}
-
-.k-on-theme nav h1 {
-    color: theme('colors.white') !important;
-}
-
-.k-on-theme .button {
-    background-color: theme('colors.yellow.200') !important;
-    color: theme('colors.gray.800') !important;
-    border-color: theme('colors.yellow.400') !important;
-}

@@ -33,6 +33,8 @@ class PlayerManager:
         self.cache = SongCache()
         self.embed_builder = EmbedBuilder()
         self.spotify_client = SpotifyClient()
+        # Track text channel IDs for responding
+        self.text_channels = {}
 
     async def get_music_info(self, query: str) -> dict:
         """Fetch music information from URL or search query."""
@@ -77,23 +79,78 @@ class PlayerManager:
         self.cache.add(info["webpage_url"], info)
         return info
 
-    async def play_song(self, context: Context, song_info: dict) -> None:
-        """Play a song in the voice channel."""
+    async def play_song(self, guild_id_or_ctx: int | Context, song_info: dict) -> bool:
+        """Play a song in the voice channel.
+
+        Args:
+            guild_id_or_ctx: Either guild ID or command Context
+            song_info: Song information dictionary
+
+        Returns:
+            True if playback started
+        """
+        # Extract guild ID and save text channel for responses
+        if isinstance(guild_id_or_ctx, Context):
+            guild_id = guild_id_or_ctx.guild.id
+            # Store the text channel for future use
+            self.voice_manager.text_channels[guild_id] = guild_id_or_ctx.channel.id
+            text_channel = guild_id_or_ctx.channel
+        else:
+            guild_id = guild_id_or_ctx
+            text_channel_id = self.voice_manager.text_channels.get(guild_id)
+            text_channel = (
+                self.bot.get_channel(text_channel_id) if text_channel_id else None
+            )
+
         logger.info(
             "Playing song: %s in guild: %s",
             song_info.get("title", "Unknown"),
-            context.guild.name if context.guild else "Unknown",
+            (
+                self.bot.get_guild(guild_id).name
+                if self.bot.get_guild(guild_id)
+                else "Unknown"
+            ),
         )
         url = song_info["url"]
         self.playlist_manager.current_song = song_info
 
-        audio_stream = FFmpegOpusAudio(url, **ffmpeg_opts)
-        self.voice_manager.voice_clients[context.guild.id].play(
-            audio_stream, after=lambda error: self.play_next(context, error)
-        )
+        audio_source = FFmpegOpusAudio(url, **ffmpeg_opts)
+        voice_client = self.voice_manager.voice_clients[guild_id]
+
+        # Set up the after function to handle when a song finishes
+        def after_playing(error):
+            if error:
+                logger.error(f"Error playing song: {error}")
+                return
+
+            # Get the next song and play it
+            asyncio.run_coroutine_threadsafe(
+                self._handle_song_finished(guild_id), self.bot.loop
+            )
+
+        # Start playing with the callback
+        voice_client.play(audio_source, after=after_playing)
 
         embed = self.embed_builder.now_playing(song_info)
-        await context.send(embed=embed)
+
+        # Send to appropriate text channel if available
+        if text_channel:
+            await text_channel.send(embed=embed)
+
+        return True
+
+    async def _handle_song_finished(self, guild_id: int) -> None:
+        """Handle song completion and start the next song if available."""
+        # Get next song from playlist manager
+        next_song = self.playlist_manager.song_finished()
+
+        if next_song:
+            logger.info(f"Song finished, playing next: {next_song.get('title')}")
+            await self.play_song(guild_id, next_song)
+        else:
+            logger.info("No more songs in queue")
+            # Optionally disconnect after some idle time
+            await self.voice_manager.start_inactivity_timer(guild_id)
 
     async def play_next(self, context: Context, error: Exception | None = None) -> None:
         """Handle playing the next song in queue."""
@@ -101,7 +158,7 @@ class PlayerManager:
             logger.error("Error during playback: %s", str(error), exc_info=error)
 
         if next_song := self.playlist_manager.get_next_song():
-            await self.play_song(context, next_song)
+            await self.play_song(context.guild.id, next_song)
         else:
             # Start the inactivity timer instead of disconnecting immediately
             await self.voice_manager.start_inactivity_timer(context.guild.id)

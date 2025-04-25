@@ -46,10 +46,12 @@ class MusicCog(commands.Cog):
         info = await self.player_manager.get_music_info(query)
         self.playlist_manager.add_to_queue(info)
 
-        if not self.voice_manager.voice_clients[context.guild.id].is_playing():
-            await self.player_manager.play_song(
-                context, self.playlist_manager.get_next_song()
-            )
+        # Get the voice client using guild ID
+        voice_client = self.voice_manager.voice_clients.get(context.guild.id)
+
+        if voice_client and not voice_client.is_playing():
+            next_song = self.playlist_manager.get_next_song()
+            await self.player_manager.play_song(context, next_song)
         else:
             embed = Embed(title="🎵 Added to Queue", color=Color.green())
             embed.add_field(

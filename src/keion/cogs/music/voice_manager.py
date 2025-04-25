@@ -15,6 +15,7 @@ class VoiceManager:
     def __init__(self) -> None:
         """Initialize the voice manager."""
         self.voice_clients: dict[int, VoiceClient] = {}
+        self.text_channels: dict[int, int] = {}  # Maps guild_id -> text_channel_id
         self.inactivity_timers: dict[int, asyncio.Task] = {}
         self.INACTIVITY_TIMEOUT = 120  # 2 minutes
 
@@ -25,6 +26,8 @@ class VoiceManager:
                 self.voice_clients[context.guild.id] = (
                     await context.author.voice.channel.connect()
                 )
+                # Store the text channel where the command was issued
+                self.text_channels[context.guild.id] = context.channel.id
             else:
                 raise CommandError("You must be in a voice channel!")
         elif context.voice_client.channel != context.author.voice.channel:
