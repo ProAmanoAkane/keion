@@ -67,36 +67,55 @@ function setupAutoRefresh() {
               // No automatic component update here - let polling handle it or trigger explicitly if needed
           }
       });
+
+    // Add proper error handling for buttons
+    document.body.addEventListener('htmx:afterOnLoad', (event) => {
+        // Check if the request failed
+        if (event.detail.failed && event.detail.xhr.status !== 204) {
+            let errorMessage = 'An error occurred';
+            
+            try {
+                const response = JSON.parse(event.detail.xhr.responseText);
+                errorMessage = response.detail || response.message || errorMessage;
+            } catch (e) {
+                errorMessage = `Error ${event.detail.xhr.status}: ${event.detail.xhr.statusText}`;
+            }
+            
+            showToast(errorMessage, 'error');
+        }
+    });
 }
 
 function setupFormHandling() {
     // Handle Add Song form specifically
      htmx.on('htmx:afterRequest', (event) => {
-         // Check if it was the add song request and it was successful
-         if (event.detail.pathInfo.requestPath === '/api/player/add' && event.detail.successful) {
+         // Check if it was the add song request
+         if (event.detail.pathInfo.requestPath === '/api/player/add') {
              const form = event.detail.elt.closest('form'); // Find the parent form
              if (form) {
                  form.reset(); // Clear the form fields
              }
 
-             // Show feedback from the success response
-             try {
-                  const response = JSON.parse(event.detail.xhr.response);
-                  showToast(response.message || "Song added successfully!", 'success'); // Use response message
-             } catch(e) {
-                  showToast("Song added successfully!", 'success'); // Fallback message
+             // Check status
+             if (event.detail.successful) {
+                 // For 204 No Content or other successful responses
+                 showToast("Song added successfully!", 'success');
+                 // Refresh the players list
+                 setTimeout(() => {
+                     htmx.ajax('GET', '/components/players', {target: '#players-container'});
+                 }, 500);
+             } else {
+                 // Handle error
+                 try {
+                     const response = JSON.parse(event.detail.xhr.responseText);
+                     showToast(response.detail || response.message || "Failed to add song", 'error');
+                 } catch(e) {
+                     showToast("Failed to add song", 'error');
+                 }
              }
-
-              // Optionally trigger an immediate refresh of players after adding
-             // setTimeout(() => {
-             //     htmx.ajax('GET', '/components/players', {target: '#players-container'});
-             // }, 500); // Delay slightly
          }
-          // Note: Error handling for the add form might be needed here too,
-          // or rely on the generic responseError handler if the form uses hx-target for errors.
      });
 }
-
 
 function setupPlayerErrorHandling() {
     htmx.on('htmx:responseError', (event) => {
@@ -163,6 +182,51 @@ function setupPlayerErrorHandling() {
     });
 }
 
+function handlePlayerResponse(event, errorContainerId) {
+    const xhr = event.detail.xhr;
+    const errorContainer = document.getElementById(errorContainerId);
+    
+    // Clear any existing error
+    if (errorContainer) {
+        errorContainer.textContent = '';
+        errorContainer.classList.add('hidden');
+    }
+    
+    // 204 means success, nothing to display
+    if (xhr.status === 204) {
+        // Refresh the players component after a successful action
+        setTimeout(() => {
+            htmx.ajax('GET', '/components/players', {target: '#players-container'});
+        }, 500);
+        return;
+    }
+    
+    // Handle errors
+    if (xhr.status >= 400) {
+        let errorMessage = 'An error occurred';
+        
+        try {
+            const response = JSON.parse(xhr.responseText);
+            errorMessage = response.detail || response.message || errorMessage;
+        } catch (e) {
+            errorMessage = `Error ${xhr.status}: ${xhr.statusText}`;
+        }
+        
+        // Display error in the container
+        if (errorContainer) {
+            errorContainer.textContent = errorMessage;
+            errorContainer.classList.remove('hidden');
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorContainer.classList.add('hidden');
+            }, 5000);
+        } else {
+            // Fallback to toast if container not found
+            showToast(errorMessage, 'error');
+        }
+    }
+}
 
 function showToast(message, type = 'success') {
     const toastContainer = document.getElementById('toast-container') || createToastContainer();

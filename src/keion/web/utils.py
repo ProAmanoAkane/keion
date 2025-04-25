@@ -88,14 +88,7 @@ async def get_stats(req_or_ws: Request | WebSocket) -> dict[str, Any]:
 
 
 async def get_players(req_or_ws: Request | WebSocket) -> list[dict[str, Any]]:
-    """Get all active music players, including their full playlists.
-
-    Args:
-        req_or_ws: FastAPI Request or WebSocket object
-
-    Returns:
-        List of dictionaries containing player information and playlists
-    """
+    """Get all active music players, including their full playlists."""
     bot = req_or_ws.app.state.bot
     music_cog: MusicCog = bot.get_cog("MusicCog")
 
@@ -106,42 +99,32 @@ async def get_players(req_or_ws: Request | WebSocket) -> list[dict[str, Any]]:
     for guild_id, voice_client in music_cog.voice_manager.voice_clients.items():
         guild = bot.get_guild(guild_id)
         if guild and voice_client.is_connected():
-            # --- Adapt how you get current_song and playlist based on your Manager ---
-            # Example: If PlaylistManager handles multiple guilds via methods
-            current_song = None
-            playlist = []
-            if hasattr(music_cog.playlist_manager, "get_current_song"):
-                current_song = music_cog.playlist_manager.get_current_song(guild_id)
-            if hasattr(music_cog.playlist_manager, "get_queue"):
-                playlist = list(
-                    music_cog.playlist_manager.get_queue(guild_id)
-                )  # Get a copy
+            # Get current song
+            current_song = music_cog.playlist_manager.current_song
 
-            serializable_playlist = []
-            for song in playlist:
+            # Get playlist - ensure it returns a serializable format
+            playlist = []
+            for (
+                song
+            ) in music_cog.playlist_manager.get_queue_songs():  # Use the new method
                 if isinstance(song, dict):
-                    serializable_playlist.append(
+                    playlist.append(
                         {
-                            "title": song.get("title", "Unknown Title"),
+                            "title": song.get("title", "Unknown"),
+                            "duration": song.get("duration", 0),
                             "requester": song.get("requester", "Unknown"),
-                            "duration": song.get("duration", 0),  # Example field
-                            # Add other relevant fields: url, thumbnail etc.
                         }
                     )
-                # Add elif for specific object types if needed
 
             players.append(
                 {
                     "guild_name": guild.name,
                     "guild_id": guild_id,
-                    # Ensure current_song is also serializable or just get title
                     "current_song_title": (
-                        current_song.get("title")
-                        if current_song and isinstance(current_song, dict)
-                        else None
+                        current_song.get("title", "Unknown") if current_song else None
                     ),
-                    "playlist": serializable_playlist,  # Use the processed list
-                    "queue_length": len(serializable_playlist),
+                    "playlist": playlist,
+                    "queue_length": len(playlist),
                     "is_playing": voice_client.is_playing(),
                     "is_paused": voice_client.is_paused(),
                 }

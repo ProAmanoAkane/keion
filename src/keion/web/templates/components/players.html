@@ -12,7 +12,7 @@
     </div>
     {% else %}
     {% for player in players %}
-    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border-2 border-pink-200 transition-all duration-300 hover:shadow-xl">
+    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border-2 border-pink-200 transition-all duration-300 hover:shadow-xl mb-6">
         <!-- Player Header -->
         <div class="bg-gradient-to-r from-pink-400 to-purple-500 p-4">
             <div class="flex justify-between items-center">
@@ -23,9 +23,9 @@
                     {{ player.guild_name }}
                 </h3>
                 <span class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm
-                    {% if player.is_playing %}bg-green-400/80 text-green-900
+                    {% if player.is_playing %}bg-green-400/80 text-green-900 status-playing
                     {% elif player.is_paused %}bg-yellow-400/80 text-yellow-900
-                    {% else %}bg-gray-400/80 text-gray-900{% endif %} animate-pulse">
+                    {% else %}bg-gray-400/80 text-gray-900{% endif %}">
                     {{ "Playing" if player.is_playing else "Paused" if player.is_paused else "Stopped" }}
                 </span>
             </div>
@@ -33,7 +33,7 @@
 
         <!-- Current Song -->
         <div class="p-4 border-b border-pink-100">
-            {% if player.current_song %}
+            {% if player.current_song_title %}
             <div class="flex items-start space-x-4">
                 <div class="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center shadow-inner">
                     <svg class="w-8 h-8 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,8 +41,8 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-base font-medium text-gray-900 truncate font-comic">
-                        {{ player.current_song }}
+                    <p class="text-base font-medium text-gray-900 font-comic">
+                        {{ player.current_song_title }}
                     </p>
                     <div class="mt-1 flex items-center text-sm text-gray-500 font-comic">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,13 +62,40 @@
             {% endif %}
         </div>
 
+        <!-- Playlist -->
+        {% if player.playlist and player.playlist|length > 0 %}
+        <div class="p-4 bg-pink-50/30 border-b border-pink-100">
+            <h4 class="text-sm font-semibold text-purple-800 mb-2">Playlist</h4>
+            <div class="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                <table class="w-full text-sm">
+                    <tbody>
+                        {% for song in player.playlist %}
+                        <tr class="border-b border-pink-100/50 last:border-0">
+                            <td class="py-2">
+                                <div class="flex items-center">
+                                    <span class="w-5 h-5 flex items-center justify-center bg-purple-100 rounded-full text-xs text-purple-700 mr-2">{{ loop.index }}</span>
+                                    <p class="font-medium truncate">{{ song.title }}</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Controls -->
         <div class="p-4 bg-gradient-to-b from-pink-50 to-purple-50 flex justify-between items-center">
+            <!-- Error message container -->
+            <div id="error-{{ player.guild_id }}" class="hidden text-red-500 text-sm"></div>
+            
             <div class="flex space-x-2">
                 {% if player.is_paused %}
                 <button 
                     hx-post="/api/player/{{ player.guild_id }}/control/play"
-                    hx-target="#players-container"
+                    hx-swap="none"
+                    hx-on::after="handlePlayerResponse(event, 'error-{{ player.guild_id }}')"
                     class="tea-button bg-green-500 hover:bg-green-600 text-white transform transition-all duration-200 hover:scale-105"
                 >
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -79,7 +106,8 @@
                 {% elif player.is_playing %}
                 <button 
                     hx-post="/api/player/{{ player.guild_id }}/control/pause"
-                    hx-target="#players-container"
+                    hx-swap="none"
+                    hx-on::after="handlePlayerResponse(event, 'error-{{ player.guild_id }}')"
                     class="tea-button bg-yellow-500 hover:bg-yellow-600 text-white transform transition-all duration-200 hover:scale-105"
                 >
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -93,7 +121,8 @@
             <div class="flex space-x-2">
                 <button 
                     hx-post="/api/player/{{ player.guild_id }}/control/skip"
-                    hx-target="#players-container"
+                    hx-swap="none"
+                    hx-on::after="handlePlayerResponse(event, 'error-{{ player.guild_id }}')"
                     class="tea-button bg-blue-500 hover:bg-blue-600 text-white transform transition-all duration-200 hover:scale-105"
                 >
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -104,7 +133,8 @@
                 
                 <button 
                     hx-post="/api/player/{{ player.guild_id }}/control/stop"
-                    hx-target="#players-container"
+                    hx-swap="none"
+                    hx-on::after="handlePlayerResponse(event, 'error-{{ player.guild_id }}')"
                     class="tea-button bg-red-500 hover:bg-red-600 text-white transform transition-all duration-200 hover:scale-105"
                 >
                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
