@@ -21,3 +21,6 @@ def setup_logging() -> None:
         datefmt=date_format,
         handlers=[logging.FileHandler(log_dir / "keion.log"), logging.StreamHandler()],
     )
+
+    # Set higher level for noisy libraries
+    logging.getLogger("musicbrainzngs").setLevel(logging.WARNING)
