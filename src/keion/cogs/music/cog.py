@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from keion.utils.constants import MAX_PLAYLIST_DISPLAY
+from keion.utils.musicbrainz_client import MusicBrainzClient  # Import the client
 
 from .player_manager import PlayerManager
 from .playlist_manager import PlaylistManager
@@ -26,7 +27,14 @@ class MusicCog(commands.Cog):
         self.player_manager = PlayerManager(
             bot, self.playlist_manager, self.voice_manager
         )
+        self.musicbrainz_client = MusicBrainzClient()  # Initialize the client
         logger.info("Music cog initialized")
+
+    async def cog_unload(self) -> None:
+        """Clean up resources when the cog is unloaded."""
+        # Close the MusicBrainz client's session if it exists
+        await self.musicbrainz_client.close_session()
+        logger.info("MusicBrainz client session closed.")
 
     @commands.Cog.listener()
     async def on_ready(self) -> None:
@@ -165,6 +173,47 @@ class MusicCog(commands.Cog):
             )
         else:
             await context.send("❌ Invalid loop mode. Use 'queue' or 'song'!")
+
+    @commands.command(aliases=["new"])
+    async def newreleases(self, context: Context, days: int = 1) -> None:
+        """Show new music releases from the last few days (default: 1)."""
+        if days < 1 or days > 7:  # Limit range for performance/API usage
+            await context.send("Please specify a number of days between 1 and 7.")
+            return
+
+        await context.typing()  # Indicate bot is working
+
+        try:
+            # Fetch releases using the client
+            releases = await self.musicbrainz_client.get_daily_releases(days_ago=days)
+
+            if not releases:
+                await context.send(
+                    f"Couldn't find any new releases from the last {days} day(s)."
+                )
+                return
+
+            embed = Embed(
+                title=f"🎸 New Releases ({days} Day{'s' if days > 1 else ''} Ago)",
+                color=Color.random(),  # Use a random color
+            )
+
+            output = []
+            for release in releases[:10]:  # Limit to 10 results for embed readability
+                title = release.get("title", "Unknown Title")
+                artist_credit = release.get("artist-credit-phrase", "Unknown Artist")
+                date = release.get("date", "Unknown Date")
+                output.append(f"**{title}** by {artist_credit} ({date})")
+
+            embed.description = "\n".join(output)
+            if len(releases) > 10:
+                embed.set_footer(text=f"Showing 10 of {len(releases)} results.")
+
+            await context.send(embed=embed)
+
+        except Exception as e:
+            logger.error(f"Error fetching new releases: {e}", exc_info=True)
+            await context.send("An error occurred while fetching new releases.")
 
     # Voice state management
     @play.before_invoke
